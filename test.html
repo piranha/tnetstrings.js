@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+<head>
+  <script src="tnetstrings.js"></script>
+</head>
+<body>
+  <h1>Check out dev console for errors if any</h1>
+  <script>
+    function assert(source, result) {
+        // easiest way to compare objects :(
+        if (JSON.stringify(source) != JSON.stringify(result))
+            console.error('Expected one result, but got another ', result, source);
+    }
+
+    TESTS = [
+        ['0:~', null],
+        ['5:false!', false],
+        ['4:test,', 'test'],
+        ['3:123#', 123],
+        ["16:5:hello,5:12345#}", {hello: 12345}],
+        ["32:5:hello,5:12345#5:hello,5:56789#]", ["hello", 12345, "hello", 56789]],
+    ];
+
+    for (var i = 0; i < TESTS.length; i++) {
+        assert(tnetstrings.parse(TESTS[i][0]).value, TESTS[i][1]);
+        assert(tnetstrings.dump(TESTS[i][1]), TESTS[i][0]);
+    }
+
+    console.log('All tests done');
+  </script>
+</body>
+</html>
