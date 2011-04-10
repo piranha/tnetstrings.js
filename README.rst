@@ -24,8 +24,8 @@ contain empty string and can be ignored.
 TODO
 ----
 
- - consider shorter name
- - consider having ``noConflict()``
- - make it work with node.js (what to do? ``exports.stuff =``?)
+- consider shorter name
+- consider having ``noConflict()``
+- make it work with node.js (what to do? ``exports.stuff =``?)
 
 
