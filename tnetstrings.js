@@ -1,5 +1,5 @@
 var tnetstrings = (function () {
-    this.parse_payload = function(data) {
+    this.parsePayload = function(data) {
         if (!data) {
             throw "Invalid data to parse, it's empty.";
         }
@@ -23,7 +23,7 @@ var tnetstrings = (function () {
     }
 
 
-    this.parse_list = function(data) {
+    this.parseList = function(data) {
         if (!data) {
             return [];
         }
@@ -37,7 +37,7 @@ var tnetstrings = (function () {
         return result;
     }
 
-    this.parse_pair = function(data) {
+    this.parsePair = function(data) {
         var pk = this.parse(data);
         if (!pk.extra) {
             throw "Unbalanced dictionary store.";
@@ -49,21 +49,21 @@ var tnetstrings = (function () {
         return {key: pk.value, value: pv.value, extra: pv.extra};
     }
 
-    this.parse_dict = function(data) {
+    this.parseDict = function(data) {
         if (!data) {
             return {};
         }
-        var kv = parse_pair(data);
+        var kv = this.parsePair(data);
         var result = {};
         result[kv.key] = kv.value;
         while (kv.extra) {
-            kv = parse_pair(kv.extra);
+            kv = this.parsePair(kv.extra);
             result[kv.key] = kv.value;
         }
         return result;
     }
 
-    this.dump_object = function(data) {
+    this.dumpObject = function(data) {
         var i, type, result = [];
 
         if (data === null) {
@@ -90,7 +90,7 @@ var tnetstrings = (function () {
 
     this.parse = function(data) {
         var value;
-        var p = this.parse_payload(data);
+        var p = this.parsePayload(data);
         switch (p.type) {
         case '#':
             value = parseInt(p.payload, 10);
@@ -107,10 +107,10 @@ var tnetstrings = (function () {
             value = p.payload;
             break;
         case '}':
-            value = this.parse_dict(p.payload);
+            value = this.parseDict(p.payload);
             break;
         case ']':
-            value = this.parse_list(p.payload);
+            value = this.parseList(p.payload);
             break;
         default:
             throw "Invalid payload type: " + p.type;
@@ -133,14 +133,9 @@ var tnetstrings = (function () {
             return data.length + ':' + data + ',';
         case 'object':
             // object in js could be dict, list, null
-            return this.dump_object(data);
+            return this.dumpObject(data);
         }
     }
 
     return this;
-
-    return {parse: parse, dump: dump,
-            _parse_payload: parse_payload, _parse_list: parse_list,
-            _parse_pair: parse_pair, _parse_dict: parse_dict,
-            _dump_object: dump_object};
 })();
