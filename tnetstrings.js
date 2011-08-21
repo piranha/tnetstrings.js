@@ -20,7 +20,7 @@ var tnetstrings = (function () {
             throw "No payload type: " + extra;
         }
         return {payload: payload, type: type, extra: extra};
-    }
+    };
 
 
     this.parseList = function(data) {
@@ -35,7 +35,7 @@ var tnetstrings = (function () {
             result[result.length] = p.value;
         }
         return result;
-    }
+    };
 
     this.parsePair = function(data) {
         var pk = this.parse(data);
@@ -47,7 +47,7 @@ var tnetstrings = (function () {
             throw "Got an invalid value, null not allowed.";
         }
         return {key: pk.value, value: pv.value, extra: pv.extra};
-    }
+    };
 
     this.parseDict = function(data) {
         if (!data) {
@@ -61,7 +61,7 @@ var tnetstrings = (function () {
             result[kv.key] = kv.value;
         }
         return result;
-    }
+    };
 
     this.dumpObject = function(data) {
         var i, type, result = [];
@@ -86,7 +86,7 @@ var tnetstrings = (function () {
 
         var payload = result.join('');
         return payload.length + ':' + payload + type;
-    }
+    };
 
     this.parse = function(data) {
         var value;
@@ -95,11 +95,14 @@ var tnetstrings = (function () {
         case '#':
             value = parseInt(p.payload, 10);
             break;
+        case '^':
+            value = parseFloat(p.payload);
+            break;
         case '!':
             value = p.payload === 'true';
             break;
         case '~':
-            if (p.payload.length != 0)
+            if (p.payload.length !== 0)
                 throw "Payload must be 0 length for null.";
             value = null;
             break;
@@ -116,7 +119,7 @@ var tnetstrings = (function () {
             throw "Invalid payload type: " + p.type;
         }
         return {value: value, extra: p.extra};
-    }
+    };
 
     this.dump = function(data) {
         switch (typeof data) {
@@ -125,7 +128,7 @@ var tnetstrings = (function () {
             if (!isFinite(data))
                 return dump(null);
             var out = data.toString();
-            return out.length + ':' + out + '#';
+            return out.length + ':' + out + (~~data === data ? '#' : '^');
         case 'boolean':
             var out = data.toString();
             return out.length + ':' + out + '!';
@@ -135,7 +138,7 @@ var tnetstrings = (function () {
             // object in js could be dict, list, null
             return this.dumpObject(data);
         }
-    }
+    };
 
     return this;
 })();
