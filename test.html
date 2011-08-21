@@ -4,12 +4,20 @@
   <script src="tnetstrings.js"></script>
 </head>
 <body>
-  <h1>Check out dev console for errors if any</h1>
-  <script>
+  <h1>You will see errors here if any</h1>
+  <div id="errors">
+  </div>
+  <script type="text/javascript">
+    errors = document.getElementById('errors');
     function assert(source, result) {
         // easiest way to compare objects :(
-        if (JSON.stringify(source) != JSON.stringify(result))
-            console.error('Expected one result, but got another ', result, source);
+        if (JSON.stringify(source) != JSON.stringify(result)) {
+            var p = document.createElement('p');
+            p.innerHTML = ('Expected one result: ' + JSON.stringify(result) +
+                           ', but got another: ' + JSON.stringify(source));
+            // console.error('Expected one result, but got another ', result, source);
+            errors.appendChild(p);
+        }
     }
 
     TESTS = [
@@ -19,6 +27,7 @@
         ['3:123#', 123],
         ["16:5:hello,5:12345#}", {hello: 12345}],
         ["32:5:hello,5:12345#5:hello,5:56789#]", ["hello", 12345, "hello", 56789]],
+        ["9:3.1415926^", 3.1415926],
     ];
 
     for (var i = 0; i < TESTS.length; i++) {

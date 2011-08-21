@@ -68,18 +68,16 @@ var tnetstrings = (function () {
 
         if (data === null) {
             return '0:~';
-        }
-        else if (Object.prototype.toString.apply(data) === '[object Array]') {
+        } else if (Object.prototype.toString.apply(data) === '[object Array]') {
             type = ']';
             for (i = 0; i < data.length; i++) {
-                result[i] = dump(data[i]);
+                result.push(dump(data[i]));
             }
         } else {
             type = '}';
             for (i in data) {
                 if (data.hasOwnProperty(i)) {
-                    result[result.length] = dump(i);
-                    result[result.length] = dump(data[i]);
+                    result.push(dump(i), dump(data[i]));
                 }
             }
         }
