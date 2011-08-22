@@ -1,5 +1,5 @@
-var tnetstrings = (function () {
-    this.parsePayload = function(data) {
+var tnetstrings = {
+    parsePayload: function(data) {
         if (!data) {
             throw "Invalid data to parse, it's empty.";
         }
@@ -20,10 +20,10 @@ var tnetstrings = (function () {
             throw "No payload type: " + extra;
         }
         return {payload: payload, type: type, extra: extra};
-    };
+    },
 
 
-    this.parseList = function(data) {
+    parseList: function(data) {
         if (!data) {
             return [];
         }
@@ -35,9 +35,9 @@ var tnetstrings = (function () {
             result[result.length] = p.value;
         }
         return result;
-    };
+    },
 
-    this.parsePair = function(data) {
+    parsePair: function(data) {
         var pk = this.parse(data);
         if (!pk.extra) {
             throw "Unbalanced dictionary store.";
@@ -47,9 +47,9 @@ var tnetstrings = (function () {
             throw "Got an invalid value, null not allowed.";
         }
         return {key: pk.value, value: pv.value, extra: pv.extra};
-    };
+    },
 
-    this.parseDict = function(data) {
+    parseDict: function(data) {
         if (!data) {
             return {};
         }
@@ -61,9 +61,9 @@ var tnetstrings = (function () {
             result[kv.key] = kv.value;
         }
         return result;
-    };
+    },
 
-    this.dumpObject = function(data) {
+    dumpObject: function(data) {
         var i, type, result = [];
 
         if (data === null) {
@@ -71,22 +71,22 @@ var tnetstrings = (function () {
         } else if (Object.prototype.toString.apply(data) === '[object Array]') {
             type = ']';
             for (i = 0; i < data.length; i++) {
-                result.push(dump(data[i]));
+                result.push(this.dump(data[i]));
             }
         } else {
             type = '}';
             for (i in data) {
                 if (data.hasOwnProperty(i)) {
-                    result.push(dump(i), dump(data[i]));
+                    result.push(this.dump(i), this.dump(data[i]));
                 }
             }
         }
 
         var payload = result.join('');
         return payload.length + ':' + payload + type;
-    };
+    },
 
-    this.parse = function(data) {
+    parse: function(data) {
         var value;
         var p = this.parsePayload(data);
         switch (p.type) {
@@ -117,14 +117,14 @@ var tnetstrings = (function () {
             throw "Invalid payload type: " + p.type;
         }
         return {value: value, extra: p.extra};
-    };
+    },
 
-    this.dump = function(data) {
+    dump: function(data) {
         switch (typeof data) {
         case 'number':
             // return null for infinite numbers
             if (!isFinite(data))
-                return dump(null);
+                return this.dump(null);
             var out = data.toString();
             return out.length + ':' + out + (~~data === data ? '#' : '^');
         case 'boolean':
@@ -136,7 +136,5 @@ var tnetstrings = (function () {
             // object in js could be dict, list, null
             return this.dumpObject(data);
         }
-    };
-
-    return this;
-})();
+    }
+};
