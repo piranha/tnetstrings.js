@@ -138,3 +138,7 @@ var tnetstrings = {
         }
     }
 };
+
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = tnetstrings;
+}
