@@ -21,11 +21,16 @@ object (or string, or whatever) and latter containing remaining of string which
 was not parsed. If passed string contained only tnetstring, ``extra`` will
 contain empty string and can be ignored.
 
+Node.js
+-------
+
+It's supported. Though NPM is not yet. But you can download ``tnetstrings.js``
+and just ``require`` it::
+
+  var tnetstrings = require('tnetstrings.js');
+
 TODO
 ----
 
 - consider shorter name
 - consider having ``noConflict()``
-- make it work with node.js (what to do? ``exports.stuff =``?)
-
-
