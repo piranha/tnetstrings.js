@@ -15,4 +15,6 @@ var tnetstrings = require('./tnetstrings'),
     assert.deepEqual( tnetstrings.dump(test[1]), test[0] );
 });
 
+assert.throws(function () { tnetstrings.dump('\u9999'); });
+
 console.log('tests done');
