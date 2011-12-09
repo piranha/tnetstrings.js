@@ -131,10 +131,20 @@ var tnetstrings = {
             var out = data.toString();
             return out.length + ':' + out + '!';
         case 'string':
+            this.assertStringIsSafe(data);
             return data.length + ':' + data + ',';
         case 'object':
             // object in js could be dict, list, null
             return this.dumpObject(data);
+        }
+    },
+
+    assertStringIsSafe: function (str) {
+        var i = str.length;
+
+        while (i--) {
+            if (str.charCodeAt(i) > 127)
+                throw new Error('String is not safe to encode as a bytestring: ' + data);
         }
     }
 };
