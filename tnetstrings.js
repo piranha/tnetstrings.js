@@ -131,13 +131,49 @@ var tnetstrings = {
             var out = data.toString();
             return out.length + ':' + out + '!';
         case 'string':
-            return data.length + ':' + data + ',';
+            return this.stringLength(data) + ':' + data + ',';
         case 'object':
             // object in js could be dict, list, null
             return this.dumpObject(data);
         }
+    },
+
+    // returns the length (in bytes) of a js
+    // string when  encoded as utf-8
+    stringLength: function (str) {
+        var i = str.length,
+            len = 0, 
+            ch;
+
+        while (i--) {
+            ch = str.charCodeAt(i);
+
+            if (ch <= 0x007F) {
+                len += 1;
+            }
+
+            else if (ch <= 0x07FF) {
+                len += 2;
+            }
+
+            else if (ch <= 0xFFFF) {
+                len += 3;
+            }
+
+            else if (ch <= 0x10FFFF) {
+                len += 4;
+            } 
+
+            else {
+                // Realistically this should never happen
+                throw new Error("Bad Charcode: " + ch);
+            }
+        }
+
+        return len;
     }
 };
+
 
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = tnetstrings;
