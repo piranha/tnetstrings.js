@@ -9,4 +9,4 @@ for line in sys.stdin.readlines():
 
 
     except Exception as err:
-        print "failed: %s" % (err,) 
+        print "failed: %s" % (err,)

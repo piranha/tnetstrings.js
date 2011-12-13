@@ -142,7 +142,7 @@ var tnetstrings = {
     // string when  encoded as utf-8
     stringLength: function (str) {
         var i = str.length,
-            len = 0, 
+            len = 0,
             ch;
 
         while (i--) {
@@ -162,7 +162,7 @@ var tnetstrings = {
 
             else if (ch <= 0x10FFFF) {
                 len += 4;
-            } 
+            }
 
             else {
                 // Realistically this should never happen
