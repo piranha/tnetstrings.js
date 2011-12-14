@@ -1,3 +1,9 @@
+/* Tagged netstrings implementation
+   tnetstrings.org
+
+   (c) 2011 Alexander Solovyov under terms of MIT License
+ */
+
 var tnetstrings = {
     parsePayload: function(data) {
         if (!data) {
