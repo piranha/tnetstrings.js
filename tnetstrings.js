@@ -14,10 +14,13 @@ var tnetstrings = {
             throw "Missing netstring delimiter";
         }
 
-        var length = parseInt(data.substr(0, idx), 10);
+        var size = parseInt(data.substr(0, idx), 10); // size in bytes
+        var length = this.payloadLength(data, idx + 1, size); // length in chars
         var payload = data.substr(idx + 1, length);
-        if (payload.length !== length) {
-            throw "Data is wrong length: " + length + " vs " + payload.length;
+        var realSize = this.stringLength(payload); // calculated size in bytes
+
+        if (realSize !== size) {
+            throw "Data is wrong length: " + size + " vs " + realSize;
         }
 
         var type = data.substr(idx + length + 1, 1);
@@ -89,7 +92,7 @@ var tnetstrings = {
         }
 
         var payload = result.join('');
-        return payload.length + ':' + payload + type;
+        return this.stringLength(payload) + ':' + payload + type;
     },
 
     parse: function(data) {
@@ -145,7 +148,7 @@ var tnetstrings = {
     },
 
     // returns the length (in bytes) of a js
-    // string when  encoded as utf-8
+    // string when encoded as utf-8
     stringLength: function (str) {
         var i = str.length,
             len = 0,
@@ -174,6 +177,44 @@ var tnetstrings = {
                 // Realistically this should never happen
                 throw new Error("Bad Charcode: " + ch);
             }
+        }
+
+        return len;
+    },
+
+    // returns the length (in chars) of a payload.
+    // It asks for a data buffer, a start index and the size in
+    // bytes of the payload.
+    payloadLength: function(data, start, size) {
+        var i = size,
+            len = 0,
+            ch;
+
+        while (i > 0) {
+            ch = data.charCodeAt(start + len);
+
+            if (ch <= 0x007F) {
+                i -= 1;
+            }
+
+            else if (ch <= 0x07FF) {
+                i -= 2;
+            }
+
+            else if (ch <= 0xFFFF) {
+                i -= 3;
+            }
+
+            else if (ch <= 0x10FFFF) {
+                i -= 4;
+            }
+
+            else {
+                // Realistically this should never happen
+                throw new Error("Bad Charcode: " + ch);
+            }
+
+            len++;
         }
 
         return len;
