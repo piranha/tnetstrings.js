@@ -1,0 +1,20 @@
+{
+    "name": "tnetstrings.js",
+    "version": "1.0.0",
+    "description": "tnetstrings implementation",
+    "main": "tnetstrings.js",
+    "scripts": {
+        "test": "node tests.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/piranha/tnetstrings.js.git"
+    },
+    "keywords": ["tnetstrings", "serialization", "deserialization"],
+    "author": "Alexander Solovyov",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/piranha/tnetstrings.js/issues"
+    },
+    "homepage": "https://github.com/piranha/tnetstrings.js"
+}
